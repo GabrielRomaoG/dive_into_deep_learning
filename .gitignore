@@ -1,0 +1,6 @@
+pytorch/
+tensorflow/
+.env/
+.vscode/
+.python-version
+T*.py
