@@ -1,0 +1,109 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, bm}
+\usepackage{cancel}
+\usepackage{amsmath}
+\parindent=16px
+\parskip=12pt 
+\title{3. Linear Neural Networks for Regression - Conceptual Exercises}
+\author{Gabriel Romão}
+
+\begin{document}
+    \maketitle
+
+    \section*{3.1. Linear Regression}
+
+    1. Assume that we have some data \(x_1, \dots, x_n \in \mathbb{R}\). Our goals is to find
+    a constant \(b\) such that \(\sum_{i}{(x_i - b)}^2\).
+
+    a. Find an analytic solution for the optimal value of b.
+
+    \begin{gather*}
+    f(b) = \sum (x_i - b)^2 \\
+    f(b) = \sum (x_i^2 - 2x_i b + b^2) \\
+    f(b) = \sum x_i^2 - 2b \sum x_i + n b^2 \\
+    f'(b) = -2 \sum x_i + 2n b \\
+    -2 \sum x_i + 2n b = 0 \\
+    \cancel{2}n b = \cancel{2} \sum x_i \\
+    b = \frac{\sum x_i}{n}
+    \end{gather*}
+
+    b. How does this problem and its solution relate to the normal distribution?
+
+    b is the mean of the data.
+
+    \noindent 2. Prove that the affine functions that can be expressed by
+    \(\mathbf{x}^\top \mathbf{w} + b\) are equivalent to linear functions on \((\mathbf{x}, 1)\)
+
+    The affine function:
+    \[f(x) = \mathbf{x} ^ \top \mathbf{w} + b\]
+
+    The linear funcion:
+    \[g(z) = \mathbf{z} ^ \top \mathbf{v}\]
+
+    where:
+    \begin{itemize}
+        \item \(\mathbf{z} = (\mathbf{x}, 1) \in \mathbb{R}\) 
+        \item \(\mathbf{v} = (\mathbf{w}, b) \in \mathbb{R}\)
+    \end{itemize}
+
+    Solving replacing z and v for their contents:
+    \begin{gather*}
+        g(z) = (\mathbf{x}, 1) ^ \top (\mathbf{w}, b) \\
+        g(z) = \mathbf{x} ^ \top \mathbf{w} + b
+    \end{gather*}
+
+    \noindent 4. Recall that one of the conditions for the linear regression problem to be 
+    solvable was that the design matrix \(\mathbf{X}^\top \mathbf{X}\) has full rank.
+
+    a. What happens if this is not the case?
+
+    \(\mathbf{X} ^ \top \mathbf{X}\) will not be invertible, thus the solution will not be 
+    unique.
+    
+    b. How could you fix it? What happens if you add a small amount of coordinate-wise
+    independent Gaussian noise to all entries of \(\mathbf{X}\)?
+
+    This could work if, in the end, the \(\mathbf{X}\) is full rank. 
+    \begin{gather*}
+        \mathbf{X} = \mathbf{X} + \mathbf{Z}
+    \end{gather*}
+    where: 
+    \begin{itemize}
+        \item \(z_{ij} \sim \mathcal{N}(0, 1)\)
+    \end{itemize}
+
+    c. What is the expected value of the design matrix \(\mathbf{X} ^ \top \mathbf{X}\)
+    in this case?
+
+    \begin{gather*}
+    \mathbf{X} ^ \top \mathbf{X} = (\mathbf{X} + \mathbf{Z}) ^ \top (\mathbf{X} + \mathbf{Z})\\
+    = (\mathbf{X} ^ \top + \mathbf{Z} ^ \top) (\mathbf{X} + \mathbf{Z})\\
+    = \mathbf{X} ^ \top \mathbf{X} + \mathbf{X} ^ \top \mathbf{Z} + \mathbf{Z} ^ \top 
+    \mathbf{X} + \mathbf{Z} ^ \top \mathbf{Z}
+    \end{gather*}
+
+    d. What happens with stochastic gradient descent when \(\mathbf{X} ^ \top \mathbf{X}\)
+    does not have full rank?
+    \begin{itemize} 
+        \item \textbf{Multiple Solutions}: The solution is not unique and may lie in the null space of \(\mathbf{X}\). 
+        \item \textbf{Slow Convergence}: Redundancy among features creates flat regions in the loss function. 
+        \item \textbf{Unstable Updates}: Updates in poorly constrained directions can be unstable. 
+    \end{itemize}
+    Regularization (e.g., Ridge regression), feature selection, or adding noise can help mitigate these problems.
+
+    \noindent 5. Assume that the noise model governing the additive noise \(\epsilon \) is the 
+    exponential distribution. That is, \(p(\epsilon) = \frac{1}{2}\exp(-|\epsilon|)\).
+
+    a. Write out the negative log-likelihood of the data under the model \(-\log P(\bm{y}  |  \bm{X})\).
+
+    \[y = \bm{w} ^ \top \bm{x} + b + \epsilon  \text{ where }  \epsilon \sim Exp(\lambda)\]
+
+    The likelihood:
+
+    \begin{gather*}
+        P(\bm{y} | \bm{X}) = \frac{1}{2} \exp (-|y - \bm{w} ^ \top \bm{x} - b|) \\
+        -\log P(\bm{y} | \bm{X}) = \sum_{i=1}^{n} \log (2) + |y_i - \bm{w} ^ \top \bm{x}_i - b| 
+    \end{gather*}
+
+\end{document}
+
